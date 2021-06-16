@@ -4,5 +4,9 @@
     "compiled": "./dist"
   },
   "parts": [
+  {
+      "implements": "part:@sanity/base/tool",
+      "path": "index.js"
+    }
   ]
 }

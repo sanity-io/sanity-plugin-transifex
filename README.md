@@ -16,7 +16,7 @@ So let's get started!
 
 ## Quickstart
 
-1. In your studio folder, run `sanity install transifex`.
+1. In your studio folder, run `sanity install sanity-plugin-transifex`.
 2. Ensure the plugin has access to your Transifex secrets. You'll want to create a document that includes your project name, organization name, and a token with appropriate access. [Please refer to the Transifex documentation on creating a token if you don't have one already.](https://docs.transifex.com/account/authentication)
     * In your studio, create a file called `populateTransifexSecrets.js`.
     * Place the following in the file and fill out the correct values (those in all-caps).
