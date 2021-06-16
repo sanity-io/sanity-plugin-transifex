@@ -69,9 +69,7 @@ const deserializeHTML = (
   }
   const children = Array.from(HTMLnode.children)
   const output =
-    target && target.type && target.type.hasOwnProperty('of')
-      ? []
-      : {}
+    target && target.type && target.type.hasOwnProperty('of') ? [] : {}
 
   children.forEach(child => {
     let deserializedObj
@@ -86,15 +84,15 @@ const deserializeHTML = (
 
     //has specific class name, so it's either a field or obj
     else if (child.className) {
-      let objType;
+      let objType
       if (target.fields) {
         objType = target.fields.find(field => field.name === child.className)
-      } 
+      }
 
       if (!objType && schema.get(child.className)) {
         objType = schema.get(child.className)
-      } 
-      
+      }
+
       if (!objType) {
         console.debug(noSchemaWarning(child))
         objType = blockContentType
