@@ -87,7 +87,7 @@ And that should do it! Go into your studio, click around, and check the document
         ```
         This config will look for the English values on all fields that look like this, and place translated values into their appropriate fields.
         
-If your content models don't look like this, you can still run the plugin as an experiment -- you'll just likely get some funky results on import!
+If your content models don't look like this, you can still run the defaults as an experiment -- you'll just likely get some funky results on import!
 
 <br />
 <br />
