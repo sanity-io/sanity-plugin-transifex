@@ -14,25 +14,22 @@ const fieldLevelPatch = (
   return findLatestDraft(documentId).then((doc: Record<string, any>) => {
     const merged: Record<string, any> = {}
 
-    for (let field in doc) {
-      const value: Record<string, any> = doc[field]
-      if (field[0] === '_' || !Object.keys(translatedFields[field])) {
-        return
-      }
-
-      //assume every field desired to be localized is in obj format
-      merged[field] = {}
+    for (let field in translatedFields) {
       const translatedVal = translatedFields[field][baseLang]
+      const origVal = doc[field][baseLang]
+
+      merged[field] = doc[field]
       let valToPatch
       if (typeof translatedVal === 'string') {
         valToPatch = translatedVal
       } else if (Array.isArray(translatedVal)) {
-        valToPatch = reconcileArray(value[baseLang], translatedVal)
+        valToPatch = reconcileArray(origVal ?? [], translatedVal)
       } else {
-        valToPatch = reconcileObject(value[baseLang], translatedVal)
+        valToPatch = reconcileObject(origVal ?? {}, translatedVal)
       }
       merged[field][localeId] = valToPatch
     }
+
     client
       .patch(doc._id)
       .set(merged)
@@ -66,7 +63,8 @@ const documentLevelPatch = (
 }
 
 const reconcileArray = (origArray: any[], translatedArray: any[]) => {
-  const combined = origArray
+  //deep copy needed for field level patching
+  const combined = JSON.parse(JSON.stringify(origArray))
   translatedArray.forEach(block => {
     if (!block._key) {
       return
@@ -96,7 +94,7 @@ const reconcileObject = (
   origObject: Record<string, any>,
   translatedObject: Record<string, any>
 ) => {
-  const updatedObj = origObject
+  const updatedObj = JSON.parse(JSON.stringify(origObject))
   Object.entries(translatedObject).forEach(([key, value]) => {
     if (!value || key[0] === '_') {
       return
