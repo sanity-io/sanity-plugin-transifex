@@ -1,5 +1,5 @@
 {
-  "version": "0.9.0",
+  "version": "0.9.12",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -38,6 +38,7 @@
   "name": "sanity-plugin-transifex",
   "author": "Sanity.io",
   "module": "dist/sanity-plugin-transifex.esm.js",
+  "homepage": "https://github.com/sanity-io/sanity-plugin-transifex#readme", 
   "size-limit": [
     {
       "path": "dist/sanity-plugin-transifex.cjs.production.min.js",
