@@ -5,7 +5,8 @@
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
-    "src"
+    "src",
+    "sanity.json"
   ],
   "engines": {
     "node": ">=10"
