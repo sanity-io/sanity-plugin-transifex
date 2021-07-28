@@ -138,7 +138,10 @@ const serializeObject = (
     return ''
   }
 
-  if (obj._type !== 'span' && obj._type !== 'block') {
+  const hasSerializer =
+    serializers.types && Object.keys(serializers.types).includes(obj._type)
+
+  if (obj._type !== 'span' && obj._type !== 'block' && !hasSerializer) {
     let innerHTML = ''
     Object.entries(obj).forEach(([fieldName, value]) => {
       let htmlField = ''
@@ -161,7 +164,7 @@ const serializeObject = (
 
     serializers.types[obj._type] = (props: Record<string, any>) => {
       return h('div', {
-        className: props.node._type ?? topFieldName,
+        className: topFieldName ?? props.node._type,
         id: props.node._key ?? props.node._id,
         innerHTML: innerHTML,
       })
