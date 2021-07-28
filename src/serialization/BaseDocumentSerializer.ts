@@ -140,8 +140,12 @@ const serializeObject = (
 
   const hasSerializer =
     serializers.types && Object.keys(serializers.types).includes(obj._type)
+  if (hasSerializer) {
+    return blocksToHtml({ blocks: [obj], serializers: serializers })
+  }
 
-  if (obj._type !== 'span' && obj._type !== 'block' && !hasSerializer) {
+  const tempSerializers = { types: { block: serializers.types.block } }
+  if (obj._type !== 'span' && obj._type !== 'block') {
     let innerHTML = ''
     Object.entries(obj).forEach(([fieldName, value]) => {
       let htmlField = ''
@@ -156,13 +160,28 @@ const serializeObject = (
         } else if (Array.isArray(value)) {
           htmlField = serializeArray(value, fieldName, stopTypes, serializers)
         } else {
-          htmlField = serializeObject(value, fieldName, stopTypes, serializers)
+          const schema = getSchema(value._type)
+          let toTranslate = value
+          if (schema) {
+            toTranslate = fieldFilter(value, schema.fields, stopTypes)
+          }
+          const objHTML = serializeObject(
+            toTranslate,
+            null,
+            stopTypes,
+            serializers
+          )
+          htmlField = `<div class=${fieldName}>${objHTML}</div>`
         }
       }
       innerHTML += htmlField
     })
 
-    serializers.types[obj._type] = (props: Record<string, any>) => {
+    if (!innerHTML) {
+      return ''
+    }
+    //@ts-ignore
+    tempSerializers.types[obj._type] = (props: Record<string, any>) => {
       return h('div', {
         className: topFieldName ?? props.node._type,
         id: props.node._key ?? props.node._id,
@@ -173,7 +192,10 @@ const serializeObject = (
 
   let serializedBlock = ''
   try {
-    serializedBlock = blocksToHtml({ blocks: [obj], serializers: serializers })
+    serializedBlock = blocksToHtml({
+      blocks: [obj],
+      serializers: tempSerializers,
+    })
   } catch (err) {
     console.debug(
       `Had issues serializing block of type "${obj._type}". Please specify a serialization method for this block in your serialization config. Received error: ${err}`
