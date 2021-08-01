@@ -5,7 +5,7 @@ import {
   BaseDocumentPatcher,
   defaultStopTypes,
   customSerializers,
-} from './serialization'
+} from 'sanity-naive-html-serializer'
 import { TransifexAdapter } from './transifexAdapter'
 export {
   TranslationTab,
