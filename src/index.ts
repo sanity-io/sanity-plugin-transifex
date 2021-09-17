@@ -1,4 +1,5 @@
-import TranslationTab from './components/TranslationTab'
+//unfortunately this nomenclature was inconsistent between publishing this and publishing the agnostic tab
+import { TranslationsTab as TranslationTab } from 'sanity-translations-tab'
 import {
   BaseDocumentDeserializer,
   BaseDocumentSerializer,
@@ -35,6 +36,7 @@ export const defaultDocumentLevelConfig = {
     )
   },
   adapter: TransifexAdapter,
+  secretsNamespace: 'transifex',
 }
 
 export const defaultFieldLevelConfig = {
@@ -55,4 +57,5 @@ export const defaultFieldLevelConfig = {
     )
   },
   adapter: TransifexAdapter,
+  secretsNamespace: 'transifex',
 }

@@ -1,14 +1,14 @@
-import { Adapter, TransifexSecrets } from './types'
+import { Adapter, Secrets } from 'sanity-translations-tab'
 
 const baseTransifexUrl = 'https://rest.api.transifex.com'
-const getHeaders = (secrets: TransifexSecrets) => ({
-  Authorization: `Bearer ${secrets.token}`,
+const getHeaders = (secrets: Secrets | null) => ({
+  Authorization: `Bearer ${secrets?.token}`,
   'Content-Type': 'application/vnd.api+json',
 })
-const projOrgSlug = (secrets: TransifexSecrets) =>
-  `o:${secrets.organization}:p:${secrets.project}`
+const projOrgSlug = (secrets: Secrets | null) =>
+  `o:${secrets?.organization}:p:${secrets?.project}`
 
-const getLocales = async (secrets: TransifexSecrets) => {
+const getLocales = async (secrets: Secrets | null) => {
   if (secrets) {
     return fetch(
       `${baseTransifexUrl}/projects/${projOrgSlug(secrets)}/languages`,
@@ -29,7 +29,7 @@ const getLocales = async (secrets: TransifexSecrets) => {
 
 const getTranslationTask = async (
   documentId: string,
-  secrets: TransifexSecrets
+  secrets: Secrets | null
 ) => {
   const projectFilter = `filter[project]=${projOrgSlug(secrets)}`
   const resourceFilter = `filter[resource]=${projOrgSlug(
@@ -78,7 +78,7 @@ const getTranslationTask = async (
 const createResource = async (
   doc: Record<string, any>,
   documentId: string,
-  secrets: TransifexSecrets
+  secrets: Secrets | null
 ) => {
   const resourceCreateBody = {
     data: {
@@ -117,7 +117,10 @@ const createResource = async (
 const createTask = async (
   documentId: string,
   document: Record<string, any>,
-  secrets: TransifexSecrets
+  //unfortunately Transifex doesn't let you specify locales on creating a task
+  //@ts-ignore
+  localeIds: string[],
+  secrets: Secrets | null
 ) => {
   let resourceId = await fetch(
     `${baseTransifexUrl}/resources/${projOrgSlug(secrets)}:r:${documentId}`,
@@ -159,7 +162,7 @@ const createTask = async (
 const getTranslation = async (
   taskId: string,
   localeId: string,
-  secrets: TransifexSecrets
+  secrets: Secrets | null
 ) => {
   const resourceDownloadBody = {
     data: {
