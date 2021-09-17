@@ -5816,6 +5816,11 @@
     "array-includes" "^3.1.2"
     "object.assign" "^4.1.2"
 
+"just-clone@^3.2.1":
+  "integrity" "sha512-PFotEVrrzAnwuWTUOFquDShWrHnUnhxNrVs1VFqkNfnoH3Sn5XUlDOePYn2Vv5cN8xV2y69jf8qEoQHm7eoLnw=="
+  "resolved" "https://registry.npmjs.org/just-clone/-/just-clone-3.2.1.tgz"
+  "version" "3.2.1"
+
 "kind-of@^3.0.2", "kind-of@^3.0.3":
   "integrity" "sha1-MeohpzS6ubuw8yRm2JOupR5KPGQ="
   "resolved" "https://registry.npmjs.org/kind-of/-/kind-of-3.2.2.tgz"
@@ -8036,10 +8041,12 @@
     "minimist" "^1.1.1"
     "walker" "~1.0.5"
 
-"sanity-naive-html-serializer@^0.1.4":
-  "integrity" "sha512-9SwliNNANfImmM2y1JPnJlIKc0mj2sYUk2rfSlpYpXFI6dhUlaFoGEQTvCkDDSKrEgn5L8YkI+5b9ZdAWLbirw=="
-  "resolved" "https://registry.npmjs.org/sanity-naive-html-serializer/-/sanity-naive-html-serializer-0.1.4.tgz"
-  "version" "0.1.4"
+"sanity-naive-html-serializer@^0.1.5":
+  "integrity" "sha512-rnjFz33tUy1RHvswk1E1q0jMxV6FGEDDxhzRRDwHgiAcgHZsZgD7mB7AE8px8YVdGE4WH0wKuHKYdwkT2DGRfg=="
+  "resolved" "https://registry.npmjs.org/sanity-naive-html-serializer/-/sanity-naive-html-serializer-0.1.5.tgz"
+  "version" "0.1.5"
+  dependencies:
+    "just-clone" "^3.2.1"
 
 "saxes@^3.1.9":
   "integrity" "sha512-Ydydq3zC+WYDJK1+gRxRapLIED9PWeSuuS41wqyoRmzvhhh9nc+QQrVMKJYzJFULazeGhzSV0QleN2wD3boh2g=="

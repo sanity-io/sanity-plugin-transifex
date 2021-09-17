@@ -1,5 +1,5 @@
 {
-  "version": "0.9.71",
+  "version": "0.9.8",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -63,6 +63,6 @@
     "@sanity/block-tools": "^2.11.0",
     "@sanity/schema": "^2.10.0",
     "@sanity/types": "^2.11.0",
-    "sanity-naive-html-serializer": "^0.1.41"
+    "sanity-naive-html-serializer": "^0.1.5"
   }
 }
