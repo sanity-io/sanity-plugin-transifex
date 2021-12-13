@@ -59,7 +59,7 @@ const getTranslationTask = async (
         localeId: locale.relationships.language.data.id.split(':')[1],
         progress: Math.floor(
           100 *
-            (locale.attributes.translated_strings /
+            (locale.attributes.reviewed_strings /
               parseFloat(locale.attributes.total_strings))
         ),
       })),
