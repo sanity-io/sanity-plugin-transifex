@@ -19,6 +19,13 @@
       "pre-commit": "tsdx lint src"
     }
   },
+  "eslintConfig": {
+    "extends": "react-app",
+    "rules": {
+      "@typescript-eslint/no-redeclare": "off",
+      "no-redeclare": "off"
+    }
+  },
   "prettier": {
     "printWidth": 80,
     "semi": false,
