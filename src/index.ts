@@ -1,61 +1,55 @@
-//unfortunately this nomenclature was inconsistent between publishing this and publishing the agnostic tab
-import { TranslationsTab as TranslationTab } from 'sanity-translations-tab'
+import { TranslationsTab } from 'sanity-translations-tab'
 import {
   BaseDocumentDeserializer,
   BaseDocumentSerializer,
-  BaseDocumentPatcher,
+  BaseDocumentMerger,
   defaultStopTypes,
   customSerializers,
 } from 'sanity-naive-html-serializer'
 import { TransifexAdapter } from './transifexAdapter'
+import { findLatestDraft, documentLevelPatch, fieldLevelPatch } from './helpers'
+import { SanityDocument } from '@sanity/types'
+
+const defaultDocumentLevelConfig = {
+  exportForTranslation: async (id: string) => {
+    const doc = await findLatestDraft(id)
+    const serialized = BaseDocumentSerializer.serializeDocument(doc, 'document')
+    return serialized
+  },
+  importTranslation: (id: string, localeId: string, document: string) => {
+    const deserialized = BaseDocumentDeserializer.deserializeDocument(
+      document
+    ) as SanityDocument
+    documentLevelPatch(id, deserialized, localeId)
+  },
+  adapter: TransifexAdapter,
+  secretsNamespace: 'transifex',
+}
+
+const defaultFieldLevelConfig = {
+  exportForTranslation: async (id: string) => {
+    const doc = await findLatestDraft(id)
+    const serialized = BaseDocumentSerializer.serializeDocument(doc, 'field')
+    return serialized
+  },
+  importTranslation: (id: string, localeId: string, document: string) => {
+    const deserialized = BaseDocumentDeserializer.deserializeDocument(
+      document
+    ) as SanityDocument
+    fieldLevelPatch(id, deserialized, localeId)
+  },
+  adapter: TransifexAdapter,
+  secretsNamespace: 'transifex',
+}
+
 export {
-  TranslationTab,
+  TranslationsTab,
   BaseDocumentDeserializer,
   BaseDocumentSerializer,
-  BaseDocumentPatcher,
+  BaseDocumentMerger,
   defaultStopTypes,
   customSerializers,
   TransifexAdapter,
-}
-
-export const defaultDocumentLevelConfig = {
-  exportForTranslation: (id: string) =>
-    BaseDocumentSerializer.serializeDocument(
-      id,
-      'document',
-      'en',
-      defaultStopTypes,
-      customSerializers
-    ),
-  importTranslation: (id: string, localeId: string, document: string) => {
-    return BaseDocumentDeserializer.deserializeDocument(
-      id,
-      document
-    ).then((deserialized: Record<string, any>) =>
-      BaseDocumentPatcher.documentLevelPatch(deserialized, id, localeId)
-    )
-  },
-  adapter: TransifexAdapter,
-  secretsNamespace: 'transifex',
-}
-
-export const defaultFieldLevelConfig = {
-  exportForTranslation: (id: string) =>
-    BaseDocumentSerializer.serializeDocument(
-      id,
-      'field',
-      'en',
-      defaultStopTypes,
-      customSerializers
-    ),
-  importTranslation: (id: string, localeId: string, document: string) => {
-    return BaseDocumentDeserializer.deserializeDocument(
-      id,
-      document
-    ).then((deserialized: Record<string, any>) =>
-      BaseDocumentPatcher.fieldLevelPatch(deserialized, id, localeId, 'en')
-    )
-  },
-  adapter: TransifexAdapter,
-  secretsNamespace: 'transifex',
+  defaultDocumentLevelConfig,
+  defaultFieldLevelConfig,
 }
