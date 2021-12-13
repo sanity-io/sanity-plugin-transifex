@@ -14,6 +14,7 @@ const defaultDocumentLevelConfig = {
   exportForTranslation: async (id: string) => {
     const doc = await findLatestDraft(id)
     const serialized = BaseDocumentSerializer.serializeDocument(doc, 'document')
+    serialized.name = id
     return serialized
   },
   importTranslation: (id: string, localeId: string, document: string) => {
@@ -30,6 +31,7 @@ const defaultFieldLevelConfig = {
   exportForTranslation: async (id: string) => {
     const doc = await findLatestDraft(id)
     const serialized = BaseDocumentSerializer.serializeDocument(doc, 'field')
+    serialized.name = id
     return serialized
   },
   importTranslation: (id: string, localeId: string, document: string) => {
