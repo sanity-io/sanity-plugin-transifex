@@ -31,6 +31,13 @@ const getTranslationTask = async (
   documentId: string,
   secrets: Secrets | null
 ) => {
+  if (!documentId || !secrets) {
+    return {
+      taskId: documentId,
+      documentId: documentId,
+      locales: [],
+    }
+  }
   const projectFilter = `filter[project]=${projOrgSlug(secrets)}`
   const resourceFilter = `filter[resource]=${projOrgSlug(
     secrets
