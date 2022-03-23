@@ -1349,7 +1349,7 @@
     "lodash" "^4.17.15"
     "oneline" "^1.0.3"
 
-"@sanity/mutator@2.21.0":
+"@sanity/mutator@^2.21.0", "@sanity/mutator@2.21.0":
   "integrity" "sha512-MTrFr8OaTLYoh6iXuH8f+V0ip1T8Vm4XpyY1J1s37hGmkJ5JGOUMVhlMiFqf6tRkXLkuQZoAgto0tG/K4mkuNA=="
   "resolved" "https://registry.npmjs.org/@sanity/mutator/-/mutator-2.21.0.tgz"
   "version" "2.21.0"
@@ -6453,22 +6453,23 @@
     "minimist" "^1.1.1"
     "walker" "~1.0.5"
 
-"sanity-naive-html-serializer@^1.1.0":
-  "integrity" "sha512-LAmeoDmQWFntvidBG/q5U/+0/vPyMMtWVyIW0f+qWtcNK8Wi5sil6LX0YFpDwBrrxJsnphIsk0y+tkAxhIlhlA=="
-  "resolved" "https://registry.npmjs.org/sanity-naive-html-serializer/-/sanity-naive-html-serializer-1.1.0.tgz"
-  "version" "1.1.0"
+"sanity-naive-html-serializer@^1.3.0":
+  "integrity" "sha512-RT73PZXN1/rKt1rjWWsDXFYq88XvhmjkkEBv2ETrQnBEjSJfujADa5CNFDUf6flJhZTlVQ+Aoiai5E0qj+oGLA=="
+  "resolved" "https://registry.npmjs.org/sanity-naive-html-serializer/-/sanity-naive-html-serializer-1.3.0.tgz"
+  "version" "1.3.0"
   dependencies:
     "@sanity/base" "^2.21.4"
     "@sanity/block-content-to-html" "^2.0.0"
     "@sanity/block-tools" "^2.11.0"
+    "@sanity/mutator" "^2.21.0"
     "@sanity/schema" "^2.10.0"
     "@sanity/types" "^2.11.0"
     "just-clone" "^3.2.1"
 
-"sanity-translations-tab@^1.1.43":
-  "integrity" "sha512-BeCfpwxLYiMwO3jARarWBvCXatL1qUeA6Tzga1NS1e574+6qxlUmcEJYSx6Odh1qPa/KgI/j6IUnN3A9CoL+Dg=="
-  "resolved" "https://registry.npmjs.org/sanity-translations-tab/-/sanity-translations-tab-1.1.43.tgz"
-  "version" "1.1.43"
+"sanity-translations-tab@^1.3.0":
+  "integrity" "sha512-yLCynrwbUlRNCxqK3FTwCCE+OPAgQY0QCbACix8I1m19F2Xf84EjUZkRJ9f4vbaP3HT402mxHlxtYnbBz+bHBw=="
+  "resolved" "https://registry.npmjs.org/sanity-translations-tab/-/sanity-translations-tab-1.3.0.tgz"
+  "version" "1.3.0"
 
 "saxes@^3.1.9":
   "version" "3.1.11"
@@ -6869,7 +6870,7 @@
     "hey-listen" "^1.0.8"
     "tslib" "^2.1.0"
 
-"styled-components@^5", "styled-components@^5.2", "styled-components@^5.2.0", "styled-components@>= 2":
+"styled-components@^5.2", "styled-components@^5.2.0", "styled-components@^5.3.3", "styled-components@>= 2":
   "integrity" "sha512-++4iHwBM7ZN+x6DtPPWkCI4vdtwumQ+inA/DdAsqYd4SVgUKJie5vXyzotA00ttcFdQkCng7zc6grwlfIfw+lw=="
   "resolved" "https://registry.npmjs.org/styled-components/-/styled-components-5.3.3.tgz"
   "version" "5.3.3"
