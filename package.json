@@ -56,7 +56,7 @@
     "typescript": "^4.0.5"
   },
   "dependencies": {
-    "sanity-naive-html-serializer": "^1.1.0",
-    "sanity-translations-tab": "^1.1.43"
+    "sanity-naive-html-serializer": "^1.3.0",
+    "sanity-translations-tab": "^1.3.0"
   }
 }
