@@ -5,12 +5,10 @@ import { BaseDocumentMerger } from 'sanity-naive-html-serializer'
 const client = sanityClient.withConfig({ apiVersion: '2021-03-25' })
 
 //document fetch
-export const findLatestDraft = (documentId: string, ignoreI18n = true) => {
+export const findLatestDraft = (documentId: string) => {
   //eliminates i18n versions
-  const query = `*[_id match $id ${
-    ignoreI18n ? ' && (_id in path("drafts.*") || _id in path("*"))' : ''
-  }]`
-  const params = { id: `*${documentId}` }
+  const query = `*[_id == $id || _id == $draftId]`
+  const params = { id: `${documentId}`, draftId: `drafts.${documentId}` }
   return client
     .fetch(query, params)
     .then(
@@ -61,7 +59,7 @@ export const documentLevelPatch = async (
     baseDoc
   )
   const targetId = `i18n.${documentId}.${localeId}`
-  const i18nDoc = await findLatestDraft(targetId, false)
+  const i18nDoc = await findLatestDraft(targetId)
 
   if (i18nDoc) {
     const cleanedMerge: Record<string, any> = {}
