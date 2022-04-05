@@ -211,6 +211,7 @@ const getTranslation = async (
         if (res.redirected) {
           return resolve(handleFileDownload(res.url))
         } else {
+          console.log('no redirected, try again')
           return res.json()
         }
       })

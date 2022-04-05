@@ -1,51 +1,42 @@
-import { TranslationsTab } from 'sanity-translations-tab'
 import {
+  TranslationsTab,
+  baseDocumentLevelConfig,
+  baseFieldLevelConfig,
+  findLatestDraft,
   BaseDocumentDeserializer,
   BaseDocumentSerializer,
   BaseDocumentMerger,
   defaultStopTypes,
   customSerializers,
-} from 'sanity-naive-html-serializer'
+  Adapter,
+} from 'sanity-translations-tab'
 import { TransifexAdapter } from './transifexAdapter'
-import { findLatestDraft, documentLevelPatch, fieldLevelPatch } from './helpers'
-import { SanityDocument } from '@sanity/types'
 
-const defaultDocumentLevelConfig = {
-  exportForTranslation: async (id: string) => {
-    const doc = await findLatestDraft(id)
-    const serialized = BaseDocumentSerializer.serializeDocument(doc, 'document')
-    serialized.name = id
-    return serialized
-  },
-  importTranslation: (id: string, localeId: string, document: string) => {
-    const deserialized = BaseDocumentDeserializer.deserializeDocument(
-      document
-    ) as SanityDocument
-    documentLevelPatch(id, deserialized, localeId)
-  },
+interface ConfigOptions {
+  adapter: Adapter
+  secretsNamespace: string | null
+  exportForTranslation: (id: string) => Promise<Record<string, any>>
+  importTranslation: (
+    id: string,
+    localeId: string,
+    doc: string
+  ) => Promise<void>
+}
+const defaultDocumentLevelConfig: ConfigOptions = {
+  ...baseDocumentLevelConfig,
   adapter: TransifexAdapter,
   secretsNamespace: 'transifex',
 }
 
-const defaultFieldLevelConfig = {
-  exportForTranslation: async (id: string) => {
-    const doc = await findLatestDraft(id)
-    const serialized = BaseDocumentSerializer.serializeDocument(doc, 'field')
-    serialized.name = id
-    return serialized
-  },
-  importTranslation: (id: string, localeId: string, document: string) => {
-    const deserialized = BaseDocumentDeserializer.deserializeDocument(
-      document
-    ) as SanityDocument
-    fieldLevelPatch(id, deserialized, localeId)
-  },
+const defaultFieldLevelConfig: ConfigOptions = {
+  ...baseFieldLevelConfig,
   adapter: TransifexAdapter,
   secretsNamespace: 'transifex',
 }
 
 export {
   TranslationsTab,
+  findLatestDraft,
   BaseDocumentDeserializer,
   BaseDocumentSerializer,
   BaseDocumentMerger,
