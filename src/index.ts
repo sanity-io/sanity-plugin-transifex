@@ -9,6 +9,8 @@ import {
   defaultStopTypes,
   customSerializers,
   Adapter,
+  documentLevelPatch,
+  fieldLevelPatch,
 } from 'sanity-translations-tab'
 import { TransifexAdapter } from './transifexAdapter'
 
@@ -37,6 +39,8 @@ const defaultFieldLevelConfig: ConfigOptions = {
 export {
   TranslationsTab,
   findLatestDraft,
+  documentLevelPatch,
+  fieldLevelPatch,
   BaseDocumentDeserializer,
   BaseDocumentSerializer,
   BaseDocumentMerger,
