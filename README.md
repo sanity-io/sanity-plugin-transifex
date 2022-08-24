@@ -1,18 +1,49 @@
 # Sanity + Transifex = 🌍
 
 
-This plugin provides an in-studio integration with [Transifex](https://transifex.com). It allows your editors to send any document to Transifex with the click of a button, monitor ongoing translations, and import partial or complete translations back into the studio. 
+This plugin provides an in-studio integration with [Transifex](https://transifex.com). It allows your editors to send any document to Transifex with the click of a button, monitor ongoing translations, and import partial or complete translations back into the studio.
 
-To maintain document structure, it's easiest to send your documents over to Transifex as HTML fragments, then deserialize them upon import. This plugin provides the following:
- 
-* A new tab in your studio for the documents you want to translate
-* An adapter that communicates with the Transifex file API
-* Customizable HTML serialization and deserialization tooling
-* Customizable document patching tooling
+# Table of Contents
+- [Plugin features](#plugin-features)
+- [Assumptions](#assumptions)
+- [Quickstart](#quickstart)
+- [Studio experience](#studio-experience)
+- [Overriding defaults](#overriding-defaults)
+- [v1 to v2 changes](#v1-to-v2-changes)
 
-So let's get started!
 
-<br />
+## Plugin features
+
+This plugin comes with (and exposes to the developer) the following items:
+- An `Adapter` that connects to the Transifex API with methods to create a new translation job, upload and assign a file to that translation job, check the progress of an ongoing translation, and retrieve a translated file.
+- A `Serializer` that transforms your content into HTML (we found this was the most efficient way to maintain your document structure, no matter how deeply nested, while remaining readable to translators in Transifex). The `Serializer` takes in optional arguments: `stopTypes`, which prevents certain types from being sent to your translatiors and `customSerializers`, which are rules you can use to have full control over how individual fields on your document get serialized.
+- A `Deserializer` that deserializes translated text back to Sanity's format.
+- A `Patcher` which determines how your content gets patched back into its destination document or field.
+- A `TranslationsTab`, a React element that allows a non-technical user to import, export, and monitor Transifex progress.
+
+To make life easier, we also include `defaultFieldLevelConfig` and `defaultDocumentLevelConfig`, which bundles all of the above up to get you up and running quickly. 
+
+## Assumptions
+To use the default config mentioned above, we assume that you are following the conventions we outline in [our documentation on localization](https://www.sanity.io/docs/localization). 
+
+
+### Field-level translations
+If you are using field-level translation, we assume any fields you want translated exist in the multi-locale object form we recommend.
+For example, on a document you don't want to be translated, you may have a "title" field that's a flat string: `title: 'My title is here.'` For a field you want to include many languages for, your title may look like
+        ```
+        { title: {
+            en: 'My title is here.',
+            es: 'Mi título está aquí.',
+            etc...
+          }
+        }
+        ```
+
+### Document level translations
+Since we often find users want to use the [Document internationalization plugin](https://www.sanity.io/plugins/document-internationalization) if they're using document-level translations, we assume that any documents you want in different languages will follow the pattern `{id-of-base-language-document}__i18n_{locale}`
+
+### Final note
+It's okay if your data doesn't follow these patterns and you don't want to change them! You will simply have to override how the plugin gets and patches back information from your documents. Please see [Overriding defaults](#overriding-defaults).
 
 ## Quickstart
 
@@ -64,197 +95,40 @@ export const getDefaultDocumentNode = (props) => {
 
 And that should do it! Go into your studio, click around, and check the document in Transifex (it should be under its Sanity `_id`). Once it's translated, check the import by clicking the `Import` button on your Transifex tab!
 
-<br />
-<br />
+## Studio experience
+By adding the `TranslationsTab` to your desk structure, your users should now have an additional view. The boxes at the top of the tab can be used to send translations off to Transifex, and once those jobs are started, they should see progress bars monitoring the progress of the jobs. They can import a partial or complete job back.
 
-### Important note on defaults
+## Overriding defaults
 
-`defaultDocumentLevelConfig` and `defaultFieldLevelConfig` make a few assumptions that can be overridden (see the below section). These assumptions are based on [Sanity's existing recommendations on localization](https://www.sanity.io/docs/localization):
-  * `defaultDocumentLevelConfig`:
-      * You want _any_ fields containing text or text arrays to be translated.
-      * You're storing documents in different languages along a path pattern like `i18n.{id-of-base-language-document}.{locale}`.
-  * `defaultFieldLevelConfig`:
-      * Your base language is English.
-      * Any fields you want translated exist in the multi-locale object form we recommend.
-        For example, on a document you don't want to be translated, you may have a "title" field that's a flat string: `title: 'My title is here.'` For a field you want to include many languages for, your title may look like
-        ```
-        { title: {
-            en: 'My title is here.',
-            es: 'Mi título está aquí.',
-            etc...
-          }
-        }
-        ```
-        This config will look for the English values on all fields that look like this, and place translated values into their appropriate fields.
-        
-If your content models don't look like this, you can still run the defaults as an experiment -- you'll just likely get some funky results on import!
+To personalize this configuration it's useful to know what arguments go into `TranslationsTab` as options (the `defaultConfigs` are just wrappers for these):
+  * `exportForTranslation`: a function that takes your document id and returns an object with `name`: the field you want to use identify your doc in Transifex (by default this is `_id` and `content`: a serialized HTML string of all the fields in your document to be translated.
+  * `importTranslation`: a function that takes in `id` (your document id) `localeId` (the locale of the imported language) and `document` the translated HTML from Transifex. It will deserialize your document back into an object that can be patched into your Sanity data, and then executes that patch.
+  * `Adapter`: An interface with methods to send things over to Transifex. You likely don't want to override this!
 
-<br />
-<br />
+There are a number of reasons to override these functions. More general cases are often around ensuring documents serialize and deserialize correctly. Since the serialization fucntions are used across all our translation plugins currently, you can find some frequently encountered scenarios at [their repository here](https://github.com/sanity-io/sanity-naive-html-serializer), along with code examples for new config. 
 
-## Overriding defaults, customizing serialization, and more!
+## V1 to V2 changes
 
-To truly fit your documents and layout, you have a lot of power over how exporting, importing, serializing, and patching work. Below are some common use cases / situations and how you can resolve them.
-<br />
-<br />
+Most users will not encounter issues in upgrading to v2. The breaking changes are as follows:
 
-### Scenario: Some fields or objects in my document are serializing /deserializing strangely.
-First: this is often caused by not declaring types at the top level of your schema. Serialization introspects your schema files and can get a much better sense of what to do when objects are not "anonymous" (this is similar to how our GraphQL functions work -- more info on "strict" schemas [here](https://www.sanity.io/docs/graphql#33ec7103289a)) You can save yourself some development time by trying this first.
-
-If that's still not doing the trick, you can add on to the serializer to ensure you have complete say over how an object gets serialized and deserialized. Under the hood, serialization is using Sanity's [blocks-to-html](https://github.com/sanity-io/block-content-to-html), and the same principles apply here. We strongly recommend you check that documentation to understand how to use these serialization rules. Here's how you might declare and use some custom serialization. 
-
-First, write your serialization rules:
-
+1. **Change to document-level localization id structure.** Since the [Internationalization input plugin](https://www.sanity.io/plugins/sanity-plugin-intl-input) was deprecated, the default pattern `i18n.{id-of-base-language-document}.{locale}` was deprecated in favor of `{id-of-base-language-document}__i18n_{locale}`. If you would like to maintain that pattern, please add the `idStructure` param to your tab config, like:
 ```javascript
-import { h } from '@sanity/block-content-to-html'
-import { customSerializers } from 'sanity-plugin-transifex'
-
-const myCustomSerializerTypes = {
-  ...customSerializers.types,
-  myType: (props) => {
-     const innerElements = //do things with the props
-     //className and id is VERY important!! don't forget them!!
-     return h('div', { className: props.node._type, id: props.node._key }, innerElements)
-  }
-}
-
-const myCustomSerializers = customSerializers
-myCustomSerializers.types = myCustomSerializerTypes
-
-const myCustomDeserializer = {
-  types: {
-    myType: (htmlString) => {
-      //parse it back out!
-    }
-  }
-}
-  
+S.view.component(TranslationsTab).title('Transifex').options(
+  {...defaultDocumentLevelConfig, idStructure: 'subpath'}
+)
+```
+2. **Underlying changes in serializers.** Serializers were updated to a) take advantage of the newer [Portable Text to HTML package](https://github.com/portabletext/to-html) and allow for explicit schema closures. If you were overriding serialization methods, that means invocation of `BaseDocumentSerializer` will change from:
+```javascript
+BaseDocumentSerializer.serializeDocument(id, 'serialization-level')
 ```
 
-If your object is inline, then you may need to use the deserialization rules in Sanity's [block-tools](https://github.com/sanity-io/sanity/tree/next/packages/@sanity/block-tools) (also used in deserialzation. So you might declare something like this:
-
+to:
 ```javascript
-const myBlockDeserializationRules = [
-  {
-    deserialize(el, next, block) {
-      if (el.className.toLowerCase() != myType.toLowerCase()) {
-        return undefined
-      }
-      
-      //do stuff with the HTML string
-      return {
-        _type: 'myType',
-        //all my other fields
-      })
-    }
-]
+import schemas from 'part:@sanity/base/schema'
+
+BaseDocumentSerializer(schemas).serializeDocument(id, 'serialization-level')
 ```
 
-Now, to bring it all together:
 
-```javascript
-import { TranslationTab, defaultDocumentLevelConfig, BaseDocumentSerializer, BaseDocumentDeserializer, BaseDocumentPatcher, defaultStopTypes } from "sanity-plugin-transifex"
+This plugin is in early stages. We plan on improving some of the user-facing chrome, sorting out some quiet bugs, figuring out where things don't fail elegantly, etc. Please be a part of our development process!
 
-const myCustomConfig = {
-  ...defaultDocumentLevelConfig,
-   exportForTranslation: (id) => 
-    BaseDocumentSerializer.serializeDocument(
-      id,
-      'document',
-      'en',
-      defaultStopTypes,
-      myCustomSerializers),
-     importTranslation: (id, localeId, document) => {
-        return BaseDocumentDeserializer.deserializeDocument(
-          id,
-          document,
-          myCustomDeserializer,
-          myBlockDeserializationRules).then(
-            deserialized =>
-              BaseDocumentPatcher.documentLevelPatch(deserialized, id, localeId)
-          )
-      }
-}
-
-```
-
-Then, in your document structure, just feed the config into your `TranslationTab`.
-
-```javascript
-        S.view.component(TranslationTab).title('Transifex').options(
-          myCustomConfig
-        )
-```
-
-<br />
-<br />
-
-### Scenario: I want to have more granular control over how my documents get patched back to my dataset.
-
-If all the serialization is working to your liking, but you have a different setup for how your document works, you can overwrite that patching logic.
-
-```javascript
-import { TranslationTab, defaultDocumentLevelConfig, BaseDocumentDeserializer } from "sanity-plugin-transifex"
-
-const myCustomConfig = {
-  ...defaultDocumentLevelConfig,
-  importTranslation: (id, localeId, document) => {
-    return BaseDocumentDeserializer.deserializeDocument(id,document).then(
-        deserialized =>
-        //you should have an object of translated values here. Do things with them!
-      )
-  }
-}
-```
-
-<br />
-<br />
-
-### Scenario: I want to ensure certain fields never get sent to my translators.
-The serializer actually introspects your schema files. You can set `localize: false` on a schema and that field should not be sent off. Example:
-```javascript
-   fields: [{
-      name: 'categories',
-      type: 'array',
-      localize: false,
-      ...
-      }]
-```
-
-<br /> 
-<br />
-
-### Scenario: I want to ensure certain types of objects never get serialized or sent to my translators.
-
-This plugin ships with a specification called `stopTypes`. By default it ignores fields that don't have useful linguistic information -- dates, numbers, etc. You can add to it easily.
-
-```javascript
-import { TranslationTab, defaultDocumentLevelConfig, defaultStopTypes, BaseDocumentSerializer } from "sanity-plugin-transifex"
-
-const myCustomStopTypes = [
-  ...defaultStopTypes,
-  'listItem'
-]
-
-const myCustomConfig = {
-  ...defaultDocumentLevelConfig,
-  exportForTranslation: (id) => BaseDocumentSerializer.serializeDocument(
-    id, 'document', 'en', myCustomStopTypes)
-}
-```
-
-As above, feed the config into your `TranslationTab`.
-
-```javascript
-
-        S.view.component(TranslationTab).title('Transifex').options(
-          myCustomConfig
-        )
-
-```
-
-There's a number of further possibilities here. Pretty much every interface provided can be partially or fully overwritten. Do write an issue if something seems to never work how you expect, or if you'd like a more elegant way of doing things. 
-
-This plugin is in early stages. We plan on improving some of the user-facing Chrome, sorting out some quiet bugs, figuring out where things don't fail elegantly, etc. Please be a part of our development process!
-
-  
