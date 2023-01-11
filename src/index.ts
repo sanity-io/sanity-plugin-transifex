@@ -11,18 +11,16 @@ import {
   Adapter,
   documentLevelPatch,
   fieldLevelPatch,
+  ExportForTranslation,
+  ImportTranslation,
 } from 'sanity-translations-tab'
 import { TransifexAdapter } from './transifexAdapter'
 
 interface ConfigOptions {
   adapter: Adapter
   secretsNamespace: string | null
-  exportForTranslation: (id: string) => Promise<Record<string, any>>
-  importTranslation: (
-    id: string,
-    localeId: string,
-    doc: string
-  ) => Promise<void>
+  exportForTranslation: ExportForTranslation
+  importTranslation: ImportTranslation
 }
 const defaultDocumentLevelConfig: ConfigOptions = {
   ...baseDocumentLevelConfig,
