@@ -5,6 +5,9 @@ import getTranslationTask from './getTranslationTask'
 import getTranslation from './getTranslation'
 import createTask from './createTask'
 
+/**
+ * @public
+ */
 export const TransifexAdapter: Adapter = {
   getLocales,
   getTranslationTask,

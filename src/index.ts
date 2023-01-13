@@ -14,22 +14,34 @@ import {
 } from 'sanity-translations-tab'
 import { TransifexAdapter } from './transifexAdapter'
 
-interface ConfigOptions {
+/**
+ * @public
+ */
+export interface ConfigOptions {
   adapter: Adapter
   secretsNamespace: string | null
   exportForTranslation: (id: string) => Promise<Record<string, any>>
   importTranslation: (
     id: string,
     localeId: string,
-    doc: string
+    doc: string,
+    idStructure?: "subpath" | "delimiter" | undefined
   ) => Promise<void>
+  idStructure?: string
 }
+
+/**
+ * @public
+ */
 const defaultDocumentLevelConfig: ConfigOptions = {
   ...baseDocumentLevelConfig,
   adapter: TransifexAdapter,
   secretsNamespace: 'transifex',
 }
 
+/**
+ * @public
+ */
 const defaultFieldLevelConfig: ConfigOptions = {
   ...baseFieldLevelConfig,
   adapter: TransifexAdapter,
