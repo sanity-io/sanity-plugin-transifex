@@ -37,7 +37,6 @@
     "v2-incompatible.js"
   ],
   "scripts": {
-    "start": "tsdx watch",
     "build": "run-s clean && plugin-kit verify-package --silent && pkg-utils build --strict && pkg-utils --strict",
     "lint": "eslint .",
     "prepare": "husky install",
@@ -50,7 +49,7 @@
   },
   "dependencies": {
     "@sanity/incompatible-plugin": "^1.0.4",
-    "sanity-translations-tab": "^2.0.8"
+    "sanity-translations-tab": "^3.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.4.3",
@@ -58,7 +57,6 @@
     "@sanity/pkg-utils": "^2.2.5",
     "@sanity/plugin-kit": "^3.1.4",
     "@sanity/semantic-release-preset": "^4.0.0",
-    "@sanity/types": "^2.11.0",
     "@types/react": "^18.0.28",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",

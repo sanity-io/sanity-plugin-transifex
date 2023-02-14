@@ -11,5 +11,13 @@
     "plugin:react-hooks/recommended",
     "plugin:prettier/recommended",
     "plugin:react/jsx-runtime"
+  ],
+  "overrides": [
+    {
+      "files": ["src/transifexAdapter/createTask.ts", "src/transifexAdapter/getTranslation.ts"],
+      "rules": {
+        "camelcase": "off"
+      }
+    }
   ]
 }

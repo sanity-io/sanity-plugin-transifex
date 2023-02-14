@@ -1,27 +1,34 @@
 import {
-  TranslationsTab,
   baseDocumentLevelConfig,
   baseFieldLevelConfig,
+  Adapter,
+  TranslationFunctionContext,
+} from 'sanity-translations-tab'
+import {TransifexAdapter} from './transifexAdapter'
+
+export {
   findLatestDraft,
   BaseDocumentDeserializer,
   BaseDocumentSerializer,
   BaseDocumentMerger,
   defaultStopTypes,
   customSerializers,
-  Adapter,
   documentLevelPatch,
   fieldLevelPatch,
 } from 'sanity-translations-tab'
-import { TransifexAdapter } from './transifexAdapter'
 
 interface ConfigOptions {
   adapter: Adapter
   secretsNamespace: string | null
-  exportForTranslation: (id: string) => Promise<Record<string, any>>
+  exportForTranslation: (
+    id: string,
+    context: TranslationFunctionContext
+  ) => Promise<Record<string, any>>
   importTranslation: (
     id: string,
     localeId: string,
-    doc: string
+    doc: string,
+    context: TranslationFunctionContext
   ) => Promise<void>
 }
 const defaultDocumentLevelConfig: ConfigOptions = {
@@ -36,17 +43,4 @@ const defaultFieldLevelConfig: ConfigOptions = {
   secretsNamespace: 'transifex',
 }
 
-export {
-  TranslationsTab,
-  findLatestDraft,
-  documentLevelPatch,
-  fieldLevelPatch,
-  BaseDocumentDeserializer,
-  BaseDocumentSerializer,
-  BaseDocumentMerger,
-  defaultStopTypes,
-  customSerializers,
-  TransifexAdapter,
-  defaultDocumentLevelConfig,
-  defaultFieldLevelConfig,
-}
+export {TransifexAdapter, defaultDocumentLevelConfig, defaultFieldLevelConfig}
