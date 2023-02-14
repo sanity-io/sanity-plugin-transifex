@@ -1,23 +1,95 @@
 {
-  "version": "2.0.6",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "engines": {
-    "node": ">=10"
+  "name": "sanity-plugin-transifex",
+  "version": "3.0.0",
+  "description": "This plugin provides an in-studio integration with Transifex. It allows your editors to send any document to Transifex with the click of a button, monitor ongoing translations, and import partial or complete translations back into the studio.",
+  "keywords": [
+    "sanity",
+    "sanity-plugin"
+  ],
+  "homepage": "https://github.com/sanity-io/sanity-plugin-transifex#readme",
+  "bugs": {
+    "url": "https://github.com/sanity-io/sanity-plugin-transifex/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sanity-io/sanity-plugin-transifex.git"
+  },
+  "license": "MIT",
+  "author": "Sanity.io",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "source": "./src/index.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.esm.js",
+      "default": "./dist/index.esm.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "source": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "sanity.json",
+    "src",
+    "v2-incompatible.js"
+  ],
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build",
-    "lint": "tsdx lint src",
-    "prepare": "tsdx build",
-    "size": "size-limit",
-    "analyze": "size-limit --why"
+    "build": "run-s clean && plugin-kit verify-package --silent && pkg-utils build --strict && pkg-utils --strict",
+    "lint": "eslint .",
+    "prepare": "husky install",
+    "analyze": "size-limit --why",
+    "clean": "rimraf dist",
+    "format": "prettier --write --cache --ignore-unknown .",
+    "link-watch": "plugin-kit link-watch",
+    "prepublishOnly": "run-s build",
+    "watch": "pkg-utils watch --strict"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint src"
-    }
+  "dependencies": {
+    "@sanity/incompatible-plugin": "^1.0.4",
+    "sanity-translations-tab": "^2.0.8"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.4.3",
+    "@commitlint/config-conventional": "^17.4.3",
+    "@sanity/pkg-utils": "^2.2.5",
+    "@sanity/plugin-kit": "^3.1.4",
+    "@sanity/semantic-release-preset": "^4.0.0",
+    "@sanity/types": "^2.11.0",
+    "@types/react": "^18.0.28",
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
+    "eslint": "^8.34.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-config-sanity": "^6.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.2",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.4",
+    "prettier-plugin-packagejson": "^2.4.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-is": "^18.2.0",
+    "rimraf": "^4.1.2",
+    "sanity": "^3.3.1",
+    "size-limit": "^4.7.0",
+    "styled-components": "^5.3.6",
+    "tslib": "^2.0.3",
+    "typescript": "^4.9.5"
+  },
+  "peerDependencies": {
+    "react": "^18",
+    "sanity": "^3"
+  },
+  "engines": {
+    "node": ">=14"
   },
   "eslintConfig": {
     "extends": "react-app",
@@ -25,37 +97,5 @@
       "@typescript-eslint/no-redeclare": "off",
       "no-redeclare": "off"
     }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "name": "sanity-plugin-transifex",
-  "author": "Sanity.io",
-  "module": "dist/sanity-plugin-transifex.esm.js",
-  "homepage": "https://github.com/sanity-io/sanity-plugin-transifex#readme",
-  "size-limit": [
-    {
-      "path": "dist/sanity-plugin-transifex.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/sanity-plugin-transifex.esm.js",
-      "limit": "10 KB"
-    }
-  ],
-  "devDependencies": {
-    "@sanity/types": "^2.11.0",
-    "eslint-config-react-app": "^6.0.0",
-    "husky": "^4.3.0",
-    "size-limit": "^4.7.0",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.0.3",
-    "typescript": "^4.0.5"
-  },
-  "dependencies": {
-    "sanity-translations-tab": "^2.0.8"
   }
 }
