@@ -1,5 +1,6 @@
 # Sanity + Transifex = 🌍
 
+This is the Studio V2 version of the Transifex plugin.
 
 This plugin provides an in-studio integration with [Transifex](https://transifex.com). It allows your editors to send any document to Transifex with the click of a button, monitor ongoing translations, and import partial or complete translations back into the studio.
 
