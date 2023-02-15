@@ -6,6 +6,9 @@
 npm install sanity-plugin-transifex
 ```
 
+![2023-02-15 10 06 06](https://user-images.githubusercontent.com/3969996/219130146-8d34c5a6-f11c-4647-826d-e3c07eaf7144.gif)
+
+
 # Sanity + Transifex = 🌍
 
 This plugin provides an in-studio integration with [Transifex](https://transifex.com). It allows your editors to send any document to Transifex with the click of a button, monitor ongoing translations, and import partial or complete translations back into the studio.
