@@ -15,6 +15,7 @@ export {
   customSerializers,
   documentLevelPatch,
   fieldLevelPatch,
+  TranslationsTab,
 } from 'sanity-translations-tab'
 
 interface ConfigOptions {
