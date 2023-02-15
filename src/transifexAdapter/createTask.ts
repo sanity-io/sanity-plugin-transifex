@@ -1,12 +1,8 @@
-import { Secrets } from 'sanity-translations-tab'
-import { baseTransifexUrl, projOrgSlug, getHeaders } from './helpers'
-import getTranslationTask from './getTranslationTask'
+import {Adapter, Secrets} from 'sanity-translations-tab'
+import {baseTransifexUrl, projOrgSlug, getHeaders} from './helpers'
+import {getTranslationTask} from './getTranslationTask'
 
-const createResource = async (
-  doc: Record<string, any>,
-  documentId: string,
-  secrets: Secrets | null
-) => {
+const createResource = (doc: Record<string, any>, documentId: string, secrets: Secrets | null) => {
   const resourceCreateBody = {
     data: {
       attributes: {
@@ -37,24 +33,23 @@ const createResource = async (
     method: 'POST',
     body: JSON.stringify(resourceCreateBody),
   })
-    .then(res => res.json())
-    .then(res => res.data.id)
+    .then((res) => res.json())
+    .then((res) => res.data.id)
 }
 
-export default async function createTask(
+//@ts-ignore until we resolve the TranslationTask return type
+export const createTask: Adapter['createTask'] = async (
   documentId: string,
   document: Record<string, any>,
-  //unfortunately Transifex doesn't let you specify locales on creating a task
-  //@ts-ignore
   localeIds: string[],
   secrets: Secrets | null
-) {
+) => {
   let resourceId = await fetch(
     `${baseTransifexUrl}/resources/${projOrgSlug(secrets)}:r:${documentId}`,
-    { headers: getHeaders(secrets) }
+    {headers: getHeaders(secrets)}
   )
-    .then(res => res.json())
-    .then(res => (res.data ? res.data.id : null))
+    .then((res) => res.json())
+    .then((res) => (res.data ? res.data.id : null))
 
   if (!resourceId) {
     resourceId = await createResource(document, documentId, secrets)

@@ -1,11 +1,11 @@
-import { Secrets } from 'sanity-translations-tab'
-import { baseTransifexUrl, projOrgSlug, getHeaders } from './helpers'
-import getLocales from './getLocales'
+import {Adapter, Secrets} from 'sanity-translations-tab'
+import {baseTransifexUrl, projOrgSlug, getHeaders} from './helpers'
+import {getLocales} from './getLocales'
 
-export default async function getTranslationTask(
+export const getTranslationTask: Adapter['getTranslationTask'] = async (
   documentId: string,
   secrets: Secrets | null
-) {
+) => {
   if (!documentId || !secrets) {
     return {
       taskId: documentId,
@@ -14,35 +14,28 @@ export default async function getTranslationTask(
     }
   }
   const projectFilter = `filter[project]=${projOrgSlug(secrets)}`
-  const resourceFilter = `filter[resource]=${projOrgSlug(
-    secrets
-  )}:r:${documentId}`
+  const resourceFilter = `filter[resource]=${projOrgSlug(secrets)}:r:${documentId}`
   const task = await fetch(
     `${baseTransifexUrl}/resource_language_stats?${projectFilter}&${resourceFilter}`,
-    { headers: getHeaders(secrets) }
+    {headers: getHeaders(secrets)}
   )
-    .then(res => {
+    .then((res) => {
       if (res.ok) {
         return res.json()
       }
       //normal -- just means that this task doesn't exist yet.
       else if (res.status === 404) {
-        return { data: [] }
-      } else {
-        throw Error(
-          `Failed to retrieve tasks from Transifex. Status: ${res.status}`
-        )
+        return {data: []}
       }
+      throw Error(`Failed to retrieve tasks from Transifex. Status: ${res.status}`)
     })
-    .then(res => ({
+    .then((res) => ({
       taskId: `${projOrgSlug(secrets)}:r:${documentId}`,
       documentId: documentId,
       locales: res.data.map((locale: Record<string, any>) => ({
         localeId: locale.relationships.language.data.id.split(':')[1],
         progress: Math.floor(
-          100 *
-            (locale.attributes.reviewed_strings /
-              parseFloat(locale.attributes.total_strings))
+          100 * (locale.attributes.reviewed_strings / parseFloat(locale.attributes.total_strings))
         ),
       })),
     }))
