@@ -24,43 +24,63 @@ This plugin provides an in-studio integration with [Transifex](https://transifex
 
 ## Quickstart
 
-1. In your studio folder, run `npm install sanity-plugin-transifex`.
-2. Ensure the plugin has access to your Transifex secrets. You'll want to create a document that includes your project name, organization name, and a token with appropriate access. [Please refer to the Transifex documentation on creating a token if you don't have one already.](https://docs.transifex.com/account/authentication)
-   - In your studio, create a file called `populateTransifexSecrets.js`.
-   - Place the following in the file and fill out the correct values (those in all-caps).
+1. In your studio folder, run:
+
+```sh
+npm install sanity-plugin-transifex
+```
+
+2. Ensure the plugin has access to your Transifex secrets. You'll want to create a document that includes your project name, organization name, and a token with appropriate access. 
+
+[Please refer to the Transifex documentation on creating a token if you don't have one already.](https://docs.transifex.com/account/authentication)
+
+In your Studio folder, create a file called `populateTransifexSecrets.js` with the following contents:
 
 ```javascript
+// ./populateTransifexSecrets.js
+// Do not commit this file to your repository
+
 import {getCliClient} from 'sanity/cli'
 
 const client = getCliClient({apiVersion: '2023-02-15'})
 
 client.createOrReplace({
+  // The `.` in this _id will ensure the document is private
+  // even in a public dataset!
   _id: 'transifex.secrets',
   _type: 'transifexSettings',
+  // Replace these with your values
   organization: 'YOUR_TRANSIFEX_ORG_HERE',
   project: 'YOUR_TRANSIFEX_PROJECT_HERE',
   token: 'YOUR_TRANSIFEX_TOKEN_HERE'
 })
 ```
 
-- On the command line, run the file with `sanity exec populateTransifexSecrets.js --with-user-token`.
-  Verify that everything went well by using Vision in the studio to query `*[_id == 'transifex.secrets']`. (NOTE: If you have multiple datasets, you'll have to do this across all of them, since it's a document!)
-- If everything looks good, go ahead and delete `populateTransifexSecrets.js` so you don't commit it.
-  Because the document's `_id` is on a path (`transifex`), it won't be exposed to the outside world, even in a public dataset. If you have concerns about this being exposed to authenticated users of your studio, you can control access to this path with [role-based access control](https://www.sanity.io/docs/access-control).
+On the command line, run the file: 
 
-3. Get the Transifex tab on your desired document type, using whatever pattern you like. You'll use the [desk structure](https://www.sanity.io/docs/structure-builder-introduction) for this. The options for translation will be nested under this desired document type's views. Here's an example:
+```sh
+npx sanity exec populateTransifexSecrets.js --with-user-token
+```
+  
+Verify that the document was created using the Vision Tool in the Studio and query `*[_id == 'transifex.secrets']`. Note: If you have multiple datasets, you'll have to do this across all of them.
+
+If the document was found in your dataset(s), delete `populateTransifexSecrets.js`. 
+
+If you have concerns about this being exposed to authenticated users of your studio, you can control access to this path with [role-based access control](https://www.sanity.io/docs/access-control).
+
+4. Get the Transifex tab on your desired document type, using whatever pattern you like. You'll use the [desk structure](https://www.sanity.io/docs/structure-builder-introduction) for this. The options for translation will be nested under this desired document type's views. Here's an example:
 
 ```javascript
 import {DefaultDocumentNodeResolver} from 'sanity/desk'
 //...your other desk structure imports...
-import {TranslationTab, defaultFieldLevelConfig} from 'sanity-plugin-transifex'
+import {TranslationsTab, defaultDocumentLevelConfig} from 'sanity-plugin-transifex'
 
 export const getDefaultDocumentNode: DefaultDocumentNodeResolver = (S, {schemaType}) => {
   if (schemaType === 'myTranslatableDocumentType') {
     return S.document().views([
       S.view.form(),
       //...my other views -- for example, live preview, the i18n plugin, etc.,
-      S.view.component(TranslationTab).title('Transifex').options(defaultDocumentLevelConfig)
+      S.view.component(TranslationsTab).title('Transifex').options(defaultDocumentLevelConfig)
     ])
   }
   return S.document()
@@ -75,8 +95,9 @@ To use the default config mentioned above, we assume that you are following the 
 
 ### Field-level translations
 
-If you are using field-level translation, we assume any fields you want translated exist in the multi-locale object form we recommend.
-For example, on a document you don't want to be translated, you may have a "title" field that's a flat string: `title: 'My title is here.'` For a field you want to include many languages for, your title may look like
+If you are using field-level translation, we assume any fields you want to be translated exist in the multi-locale object form we recommend.
+
+For example, on a document you don't want to be translated, you may have a "title" field that's a flat string: `title: 'My title is here.'` For a field you want to include many languages for your title may look like:
 
 ```javascript
 {
@@ -109,11 +130,13 @@ To personalize this configuration it's useful to know what arguments go into `Tr
 - `importTranslation`: a function that takes in `id` (your document id) `localeId` (the locale of the imported language) and `document` the translated HTML from Transifex. It will deserialize your document back into an object that can be patched into your Sanity data, and then executes that patch.
 - `Adapter`: An interface with methods to send things over to Transifex. You likely don't want to override this!
 
-There are a number of reasons to override these functions. More general cases are often around ensuring documents serialize and deserialize correctly. Since the serialization functions are used across all our translation plugins currently, you can find some frequently encountered scenarios at [their repository here](https://github.com/sanity-io/sanity-naive-html-serializer), along with code examples for new config.
+There are several reasons to override these functions. More general cases are often around ensuring documents serialize and deserialize correctly. Since the serialization functions are used across all our translation plugins currently, you can find some frequently encountered scenarios at [their repository here](https://github.com/sanity-io/sanity-naive-html-serializer), along with code examples for new config.
 
-## Migrating to V3
+## Migrating to Sanity Studio v3
 
-You should not have to do anything to migrate to V3. If you are using the default configs, you should be able to upgrade without any changes. If you are using custom serialization, you may need to update how `BaseDocumentSerializer` receives your schema. These is oulined in the serializer README [here](https://github.com/sanity-io/sanity-naive-html-serializer#v2-to-v3-changes).
+You should not have to do anything to migrate to Sanity Studio v3. If you are using the default configs, you should be able to upgrade without any changes. If you are using custom serialization, you may need to update how `BaseDocumentSerializer` receives your schema. 
+
+These are outlined in the serializer README [here](https://github.com/sanity-io/sanity-naive-html-serializer#v2-to-v3-changes).
 
 ## License
 
