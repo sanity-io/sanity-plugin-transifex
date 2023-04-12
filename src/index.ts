@@ -21,7 +21,8 @@ interface ConfigOptions {
   importTranslation: (
     id: string,
     localeId: string,
-    doc: string
+    doc: string,
+    _idStructure: undefined
   ) => Promise<void>
 }
 const defaultDocumentLevelConfig: ConfigOptions = {
