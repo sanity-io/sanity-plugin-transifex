@@ -1,6 +1,6 @@
 {
   "name": "sanity-plugin-transifex",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "This plugin provides an in-studio integration with Transifex. It allows your editors to send any document to Transifex with the click of a button, monitor ongoing translations, and import partial or complete translations back into the studio.",
   "keywords": [
     "sanity",
@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@sanity/incompatible-plugin": "^1.0.4",
-    "sanity-translations-tab": "^3.0.0"
+    "sanity-translations-tab": "^4.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.4.3",
