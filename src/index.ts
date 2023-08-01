@@ -1,5 +1,6 @@
 import {
   baseDocumentLevelConfig,
+  legacyDocumentLevelConfig as baseLegacyDocumentLevelConfig,
   baseFieldLevelConfig,
   Adapter,
   TranslationFunctionContext,
@@ -13,6 +14,7 @@ export {
   BaseDocumentMerger,
   defaultStopTypes,
   customSerializers,
+  legacyDocumentLevelPatch,
   documentLevelPatch,
   fieldLevelPatch,
   TranslationsTab,
@@ -38,10 +40,21 @@ const defaultDocumentLevelConfig: ConfigOptions = {
   secretsNamespace: 'transifex',
 }
 
+const legacyDocumentLevelConfig: ConfigOptions = {
+  ...baseLegacyDocumentLevelConfig,
+  adapter: TransifexAdapter,
+  secretsNamespace: 'transifex',
+}
+
 const defaultFieldLevelConfig: ConfigOptions = {
   ...baseFieldLevelConfig,
   adapter: TransifexAdapter,
   secretsNamespace: 'transifex',
 }
 
-export {TransifexAdapter, defaultDocumentLevelConfig, defaultFieldLevelConfig}
+export {
+  TransifexAdapter,
+  defaultDocumentLevelConfig,
+  defaultFieldLevelConfig,
+  legacyDocumentLevelConfig,
+}
