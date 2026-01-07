@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@sanity/incompatible-plugin": "^1.0.5",
-    "sanity-translations-tab": "^4.4.0"
+    "sanity-translations-tab": "^5.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.4.3",
